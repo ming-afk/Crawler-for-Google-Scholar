@@ -4,7 +4,6 @@ import ssl
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 from urllib.request import urlopen
-from bs4 import BeautifulSoup
 import re
 from bs4 import BeautifulSoup
 import urllib.request
@@ -127,7 +126,7 @@ def scholarCrawler(urllist):
         ###By chance, the urls we retrieve can end with either:
         ###hl=en&user=...  OR
         ###user=...&hl=en
-        ###we want to use the second format
+        ###we want to extract the second format
         
         if url.find("user")>url.find("hl=en"):
             p1,p2 = url.split("?")
@@ -168,7 +167,7 @@ def scholarCrawler(urllist):
 
 
 while True:
-    #during url collection, output of extendurl is consistently feed back to itself
+    #during url collection, output of extendurl is consistently fed back to itself
     #after url collection, starturl of each crawl contains the single lastest url that is added to the database
     #but before tables are created, starturl is provided by the user.
 
@@ -176,6 +175,7 @@ while True:
     if rowNum!=0:
         print("Crawling continues from lastest link retrieval")
         print("")
+    ###selecting newest url retrieved
         cur.execute(''' SELECT url FROM Profileurl WHERE id in (SELECT max(id) FROM Profileurl) ''')
         url = cur.fetchone()[0]
 
@@ -187,7 +187,7 @@ while True:
     while True:
         cur.execute("select * from Scholars")
         rowNum = len(cur.fetchall())
-        print("acquired information from {data} websites, {number} pages left"
+        print("Already acquired information from {data} websites, {number} pages left"
               .format(data = rowNum,number = limit-rowNum))
         if rowNum>=limit:
             print("Enough scholars retrieved")
@@ -198,7 +198,7 @@ while True:
     pages = input("Crawling finished, please enter number of pages or press Enter to quit: ")
     
     if pages == "":
-        print("Program exiting")
+        print("Program exited")
         break
     else:
         limit = int(pages) + rowNum
